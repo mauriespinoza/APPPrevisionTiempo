@@ -1,0 +1,14 @@
+{
+  "name": "weatherchart",
+  "version": "1.0.0",
+  "description": "Pagina de pronostico tiempo por ciudad",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mauricio Espinoza",
+  "license": "ISC",
+  "dependencies": {
+    "fetch": "^1.1.0"
+  }
+}
