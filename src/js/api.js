@@ -7,13 +7,114 @@ const table = document.getElementById('bodyTable');
 let localidades = [];
 let latitude = '';
 let longitud = '';
-
-
+let IDLocalidad = '';
+let grafico1;
+let grafico2;
+let grafico3;
 function localidad(){
     console.log('hola mundo');
+    const index = localidades.findIndex((el) => el.place_id == IDLocalidad);
+    console.log("index: " + index);
+    const localidad = localidades[index];
+    console.log("lat: " + localidad.lat  + ' lon: ' + localidad.lon);
+    latitude = localidad.lat;
+    longitud = localidad.lon;
+    const URL_FIND_WEATHER = URL + `point?lat=${latitude}&lon=${longitud}&sections=current%2Cdaily&language=en&units=auto&key=${apiKey}`;
+    const url = URL_FIND_WEATHER;
+    console.log(`url::${url}`);
+    
+    let infoTemp = [];
+    const getDataAPI= async ()=>{
+        const response = await fetch(url);
+        const datos = await response.json();
+        infoTemp = datos.daily.data;
+    };
+    getDataAPI()
+    .then((result)=>{
+        infoTemp.forEach((element)=>{
+            console.log(`info::${element.day}`);
+            console.log(`info::${element.all_day.temperature_max}`);
+            
+        });
+        const labels = infoTemp.map((entry) => entry.day);
+        const values = infoTemp.map((entry) => entry.all_day.temperature_max);
+        const valuesMin = infoTemp.map((entry) => entry.all_day.temperature_min);
+        if (grafico1) {
+          grafico1.destroy();
+        }
+        const ctx = document.getElementById("graficoTemperatura").getContext("2d");
+        grafico1 = new Chart(ctx, {
+              type: "bar",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "Fecha",
+                    data: valuesMin,
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    borderRadius: Number.MAX_VALUE,
+                    borderWidth: 3,
+                  },
+                  {
+                    label: "Fecha",
+                    data: values,
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    borderWidth: 3,
+                  },
+                ],
+              },
+              
+            });
+            const speed = infoTemp.map((entry) => entry.all_day.wind.speed);
+            const ctx_2 = document.getElementById("graficoVelocidadViento").getContext("2d");
+            if (grafico2) {
+              grafico2.destroy();
+            }
+            grafico2 = new Chart(ctx_2, {
+              type: "line",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "Fecha",
+                    data: speed,
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    borderWidth: 3,
+                  },
+                ],
+              },
+              option:{
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Pronóstico del tiempo, Proximos 7 días'
+                }
+              },
+            });
+            const precipitation = infoTemp.map((entry) => entry.all_day.precipitation.total);
+            const ctx_3 = document.getElementById("graficoLLuvias").getContext("2d");
+            if (grafico3) {
+              grafico3.destroy();
+            }
+            grafico3 = new Chart(ctx_3, {
+              type: "line",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "Fecha",
+                    data: precipitation,
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    borderWidth: 3,
+                  },
+                ],
+              },
+            });
+    });
 }
 
   function selectLocalidad(id){
+    console.log("id: " + id);
     const index = localidades.findIndex((el) => el.place_id == id);
     console.log("index: " + index);
     const localidad = localidades[index];
@@ -35,18 +136,34 @@ function localidad(){
     };
     getData().then((result) => {
         console.log(result);
-        localidades.forEach((element) => {
+        let x=0;
+        const botones=null;
+        table.innerHTML ='';
+        localidades.forEach((element, index) => {
                 console.log(element.name);
                 table.innerHTML += `
+                <td data-label="Id">${element.place_id}</td>
                 <td data-label="Nombre">${element.name}</td>
                 <td data-label="Area">${element.adm_area1}</td>
                 <td data-label="Provincia">${element.adm_area2}</td>
                 <td data-label="Pais">${element.country}</td>
                 <td data-label="Seleccionar">
-                  <button onclick="selectLocalidad(${element.place_id})" class="btn btn-primary">Seleccionar</button>
+                  <button id="button-${index}" class="btn btn-primary">Seleccionar</button>
                 </td>
-                `;
+                `;  // <=======
               });
+        localidades.forEach((element, index) => {
+                document.getElementById(`button-${index}`).addEventListener('click', () =>
+                  funcionIntermedia(index)
+                );
+        });
     });
   
   });
+  const funcionIntermedia = function (index) {    // <=======
+    const element = localidades[index];
+    console.log(`Click realizado en ${element.place_id}`);
+    IDLocalidad = element.place_id;
+    localidad();
+    //selectLocalidad(element.place_id);
+  }
