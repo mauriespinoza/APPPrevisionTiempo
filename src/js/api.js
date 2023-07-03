@@ -158,7 +158,6 @@ function localidad(){
                 );
         });
     });
-  
   });
   const funcionIntermedia = function (index) {    // <=======
     const element = localidades[index];
