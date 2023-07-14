@@ -11,8 +11,9 @@ let IDLocalidad = '';
 let grafico1;
 let grafico2;
 let grafico3;
-
-
+let elevation = 0;
+let unidadMedida= '';
+let timezone = '';
 function localidad(){
     console.log('hola mundo');
     const index = localidades.findIndex((el) => el.place_id == IDLocalidad);
@@ -30,12 +31,15 @@ function localidad(){
     const getDataAPI= async ()=>{
         const response = await fetch(url);
         const datos = await response.json();
-        let elevation = datos.elevation;
-        console.log("elevation::",elevation);
+
         infoTemp = datos.daily.data;
         //infoTemp = datos.current;
         infoTempGeneral = datos.current;
+        elevation = datos.elevation;
+        unidadMedida = datos.units;
+        timezone = datos.timezone;
         console.log(infoTempGeneral);
+        console.log('unidadMedida:',unidadMedida);
     };
     getDataAPI()
     .then((result)=>{
@@ -43,31 +47,78 @@ function localidad(){
             console.log(`info.day::${element.day}`);
             console.log(`info.TempMAx::${element.all_day.temperature_max}`);
         });
-      let tempMin =   infoTemp[0].all_day.temperature_min;
-      console.log("tempMin::",tempMin);
+      //   //MOSTRAR DIV OCULTOS
+      // const  rowInfo = document.getElementById('rowInfo');
+      // const  rowGrafico = document.getElementById('rowGrafico');
+      document.getElementById('rowInfo').style.display = 'flex';
+      document.getElementById('rowGrafico').style.display = 'block';
+      document.getElementById('tabla-contenedor').style.display = 'none';
+
+      let tempMin_1 =   infoTemp[0].all_day.temperature_min;
+      let tempMax_1 =  infoTemp[0].all_day.temperature_max;
+      let tempMin_2 =   infoTemp[1].all_day.temperature_min;
+      let tempMax_2 =  infoTemp[1].all_day.temperature_max;
+      let lluvia_1 = infoTemp[0].all_day.precipitation.total;
+      let lluviaTipo_1 = infoTemp[0].all_day.precipitation.type;
+      let lluvia_2 = infoTemp[1].all_day.precipitation.total;
+      let lluviaTipo_2 = infoTemp[1].all_day.precipitation.type;
+      console.log("tempMin_1::",tempMin_1);
       //   infoTemp.forEach((element)=>{
       //     console.log(`info::${element.daily.data.day}`);
       //     console.log(`info::${element.daily.data.all_day.temperature_max}`);
       // });
+      
+      const alturaLocalidad = document.getElementById('lblAltura');
+      const coordenadasLocalidad = document.getElementById('lblCoordenadas');
+      alturaLocalidad.innerText = 'Altura: ' + elevation;
+      console.log("elevation::",elevation);
+      coordenadasLocalidad.innerText = 'Coordenadas Lat: ' + latitude + '   Lon: ' + longitud;
+      const date = new Date();   
+      let fechaActual =date.getFullYear();
+      const fecha  = document.getElementById('lblFecha');
+      fecha.innerText = date;
       const obj = infoTempGeneral.temperature;
       console.log(infoTempGeneral.temperature);
-      const lblTempMax = document.getElementById('lblTempMax');
-      const lblResumen = document.getElementById('lblResumen');
-      const lblCubierto = document.getElementById('lblCubierto');
-      const lblPrecipitacion = document.getElementById('lblPrecipitacion');
-      const iconTiempo = document.getElementById('iconTiempo');
-      lblTempMax.innerText= 'Temp. Actual ' + infoTempGeneral.temperature;
-      lblResumen.innerText = 'Resumen ' + infoTempGeneral.summary;
-      lblCubierto.innerHTML = 'Cubierto ' + infoTempGeneral.cloud_cover + ' %';
-      lblPrecipitacion.innerHTML = 'Lluvias ' + infoTempGeneral.precipitation.total + ' m/m';
-      iconTiempo.src = `assets/icon/weather_icons/set01/big/${infoTempGeneral.icon_num}.png`;
-        // infoTempGeneral.forEach((element)=>{
+      const lblLocalidad= document.getElementById('lblLocalidad');
+      lblLocalidad.innerText = _txtUbicacion.value.toUpperCase();
+      const lblTempActual = document.getElementById('lblTempActual');
+      const lblTempMin_1 = document.getElementById('lblTempMin_1');
+      const lblTempMin_2 = document.getElementById('lblTempMin_2');
+      const lblTempMax_1 = document.getElementById('lblTempMax_1');
+      const lblTempMax_2 = document.getElementById('lblTempMax_2');
+      lblTempMin_1.innerText = tempMin_1;
+      lblTempMin_2.innerText = tempMin_2;
+      lblTempMax_1.innerText = tempMax_1;
+      lblTempMax_2.innerText = tempMax_2;
+
+      //grid columna lluvias
+      const lblLluviaCant_1 = document.getElementById('lblLluviaCant_1');
+      const lblLluviaCant_2 = document.getElementById('lblLluviaCant_2');
+      const lblLluviaTipo_1 = document.getElementById('lblLluviaTipo_1');
+      const lblLluviaTipo_2 = document.getElementById('lblLluviaTipo_2'); 
+      lblLluviaCant_1.innerText = lluvia_1;
+      lblLluviaCant_2.innerText = lluvia_2;
+      lblLluviaTipo_1.innerText = lluviaTipo_1;
+      lblLluviaTipo_2.innerText = lluviaTipo_2;
+
+      // const lblResumen = document.getElementById('lblResumen');
+      // const lblCubierto = document.getElementById('lblCubierto');
+      // const lblPrecipitacion = document.getElementById('lblPrecipitacion');
+      // const iconTiempo = document.getElementById('iconTiempo');
+       lblTempActual.innerText=  infoTempGeneral.temperature;
+      // lblResumen.innerText = 'Resumen ' + infoTempGeneral.summary;
+      // lblCubierto.innerText = 'Cubierto ' + infoTempGeneral.cloud_cover + ' %';
+      // lblPrecipitacion.innerText = 'Lluvias ' + infoTempGeneral.precipitation.total + ' m/m';
+      // iconTiempo.src = `assets/icon/weather_icons/set01/big/${infoTempGeneral.icon_num}.png`;
+      
+      
+      // infoTempGeneral.forEach((element)=>{
         //       console.log(`info::${element.temperature}`);
         //       //console.log(`info::${element.all_day.temperature_max}`);
         // });
         //lblTempMax.value = infoTempGeneral[0].current.temperature;
-        lblTempMax.value =infoTempGeneral.temperature
-        console.log('lblTempMax::' + lblTempMax.value);
+        // lblTempMax.value =infoTempGeneral.temperature
+        // console.log('lblTempMax::' + lblTempMax.value);
         const labels = infoTemp.map((entry) => entry.day);
         const values = infoTemp.map((entry) => entry.all_day.temperature_max);
         const valuesMin = infoTemp.map((entry) => entry.all_day.temperature_min);
@@ -77,8 +128,9 @@ function localidad(){
         if (grafico1) {
           grafico1.destroy();
         }
+        document.getElementById("grafico").style.height = "400px"
         const ctx = document.getElementById("graficoTemperatura").getContext("2d");
-        
+        // document.getElementById("graficoTemperatura").style.width = "900px";
         grafico1 = new Chart(ctx, {
               type: "bar",
               data: {
@@ -87,7 +139,8 @@ function localidad(){
                   {
                     label: "Fecha",
                     data: valuesMin,
-                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    // backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    backgroundColor: "red",
                     borderRadius: Number.MAX_VALUE,
                     borderWidth: 3,
                   },
@@ -101,51 +154,51 @@ function localidad(){
               },
               
             });
-            const speed = infoTemp.map((entry) => entry.all_day.wind.speed);
-            const ctx_2 = document.getElementById("graficoVelocidadViento").getContext("2d");
-            if (grafico2) {
-              grafico2.destroy();
-            }
-            grafico2 = new Chart(ctx_2, {
-              type: "line",
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    label: "Fecha",
-                    data: speed,
-                    backgroundColor: "rgba(0, 123, 255, 0.5)",
-                    borderWidth: 3,
-                  },
-                ],
-              },
-              option:{
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Pronóstico del tiempo, Proximos 7 días'
-                }
-              },
-            });
-            const precipitation = infoTemp.map((entry) => entry.all_day.precipitation.total);
-            const ctx_3 = document.getElementById("graficoLLuvias").getContext("2d");
-            if (grafico3) {
-              grafico3.destroy();
-            }
-            grafico3 = new Chart(ctx_3, {
-              type: "line",
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    label: "Fecha",
-                    data: precipitation,
-                    backgroundColor: "rgba(0, 123, 255, 0.5)",
-                    borderWidth: 3,
-                  },
-                ],
-              },
-            });
+            // const speed = infoTemp.map((entry) => entry.all_day.wind.speed);
+            // const ctx_2 = document.getElementById("graficoVelocidadViento").getContext("2d");
+            // if (grafico2) {
+            //   grafico2.destroy();
+            // }
+            // grafico2 = new Chart(ctx_2, {
+            //   type: "line",
+            //   data: {
+            //     labels: labels,
+            //     datasets: [
+            //       {
+            //         label: "Fecha",
+            //         data: speed,
+            //         backgroundColor: "rgba(0, 123, 255, 0.5)",
+            //         borderWidth: 3,
+            //       },
+            //     ],
+            //   },
+            //   option:{
+            //     responsive: true,
+            //     title: {
+            //         display: true,
+            //         text: 'Pronóstico del tiempo, Proximos 7 días'
+            //     }
+            //   },
+            // });
+            // const precipitation = infoTemp.map((entry) => entry.all_day.precipitation.total);
+            // const ctx_3 = document.getElementById("graficoLLuvias").getContext("2d");
+            // if (grafico3) {
+            //   grafico3.destroy();
+            // }
+            // grafico3 = new Chart(ctx_3, {
+            //   type: "line",
+            //   data: {
+            //     labels: labels,
+            //     datasets: [
+            //       {
+            //         label: "Fecha",
+            //         data: precipitation,
+            //         backgroundColor: "rgba(0, 123, 255, 0.5)",
+            //         borderWidth: 3,
+            //       },
+            //     ],
+            //   },
+            // });
     });
 }
 
@@ -174,6 +227,7 @@ function localidad(){
         console.log(result);
         let x=0;
         const botones=null;
+        document.getElementById('tabla-contenedor').style.display = 'flex';
         table.innerHTML ='';
         localidades.forEach((element, index) => {
                 console.log(element.name);
