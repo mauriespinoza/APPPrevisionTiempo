@@ -1,3 +1,6 @@
+import {crearGrafico} from  "./creaGrafico.js";
+
+
 const _btnBuscar = document.getElementById('btnBuscar');
 const _txtUbicacion = document.getElementById('txtUbicacion');
 const URL = 'https://www.meteosource.com/api/v1/free/';
@@ -8,20 +11,24 @@ let localidades = [];
 let latitude = '';
 let longitud = '';
 let IDLocalidad = '';
-let grafico1;
-let grafico2;
-let grafico3;
+let DescLocalidad = '';
+// let grafico1;
+// let grafico2;
+// let grafico3;
 let elevation = 0;
 let unidadMedida= '';
 let timezone = '';
+let infoGrafico =[];
+
 function localidad(){
-    console.log('hola mundo');
     const index = localidades.findIndex((el) => el.place_id == IDLocalidad);
     console.log("index: " + index);
     const localidad = localidades[index];
     console.log("lat: " + localidad.lat  + ' lon: ' + localidad.lon);
     latitude = localidad.lat;
     longitud = localidad.lon;
+    DescLocalidad = localidad.name.toUpperCase();
+    console.log("DescLocalidad: " + DescLocalidad);
     const URL_FIND_WEATHER = URL + `point?lat=${latitude}&lon=${longitud}&sections=current%2Cdaily&language=en&units=auto&key=${apiKey}`;
     const url = URL_FIND_WEATHER;
     console.log(`url::${url}`);
@@ -31,8 +38,9 @@ function localidad(){
     const getDataAPI= async ()=>{
         const response = await fetch(url);
         const datos = await response.json();
-
+        
         infoTemp = datos.daily.data;
+        infoGrafico = infoTemp;
         //infoTemp = datos.current;
         infoTempGeneral = datos.current;
         elevation = datos.elevation;
@@ -47,9 +55,7 @@ function localidad(){
             console.log(`info.day::${element.day}`);
             console.log(`info.TempMAx::${element.all_day.temperature_max}`);
         });
-      //   //MOSTRAR DIV OCULTOS
-      // const  rowInfo = document.getElementById('rowInfo');
-      // const  rowGrafico = document.getElementById('rowGrafico');
+
       document.getElementById('rowInfo').style.display = 'flex';
       document.getElementById('rowGrafico').style.display = 'block';
       document.getElementById('tabla-contenedor').style.display = 'none';
@@ -63,10 +69,7 @@ function localidad(){
       let lluvia_2 = infoTemp[1].all_day.precipitation.total;
       let lluviaTipo_2 = infoTemp[1].all_day.precipitation.type;
       console.log("tempMin_1::",tempMin_1);
-      //   infoTemp.forEach((element)=>{
-      //     console.log(`info::${element.daily.data.day}`);
-      //     console.log(`info::${element.daily.data.all_day.temperature_max}`);
-      // });
+
       
       const alturaLocalidad = document.getElementById('lblAltura');
       const coordenadasLocalidad = document.getElementById('lblCoordenadas');
@@ -80,7 +83,8 @@ function localidad(){
       const obj = infoTempGeneral.temperature;
       console.log(infoTempGeneral.temperature);
       const lblLocalidad= document.getElementById('lblLocalidad');
-      lblLocalidad.innerText = _txtUbicacion.value.toUpperCase();
+      //lblLocalidad.innerText = _txtUbicacion.value.toUpperCase();
+      lblLocalidad.innerText = DescLocalidad;
       const lblTempActual = document.getElementById('lblTempActual');
       const lblTempMin_1 = document.getElementById('lblTempMin_1');
       const lblTempMin_2 = document.getElementById('lblTempMin_2');
@@ -100,105 +104,13 @@ function localidad(){
       lblLluviaCant_2.innerText = lluvia_2;
       lblLluviaTipo_1.innerText = lluviaTipo_1;
       lblLluviaTipo_2.innerText = lluviaTipo_2;
+      lblTempActual.innerText=  infoTempGeneral.temperature;
 
-      // const lblResumen = document.getElementById('lblResumen');
-      // const lblCubierto = document.getElementById('lblCubierto');
-      // const lblPrecipitacion = document.getElementById('lblPrecipitacion');
-      // const iconTiempo = document.getElementById('iconTiempo');
-       lblTempActual.innerText=  infoTempGeneral.temperature;
-      // lblResumen.innerText = 'Resumen ' + infoTempGeneral.summary;
-      // lblCubierto.innerText = 'Cubierto ' + infoTempGeneral.cloud_cover + ' %';
-      // lblPrecipitacion.innerText = 'Lluvias ' + infoTempGeneral.precipitation.total + ' m/m';
-      // iconTiempo.src = `assets/icon/weather_icons/set01/big/${infoTempGeneral.icon_num}.png`;
-      
-      
-      // infoTempGeneral.forEach((element)=>{
-        //       console.log(`info::${element.temperature}`);
-        //       //console.log(`info::${element.all_day.temperature_max}`);
-        // });
-        //lblTempMax.value = infoTempGeneral[0].current.temperature;
-        // lblTempMax.value =infoTempGeneral.temperature
-        // console.log('lblTempMax::' + lblTempMax.value);
-        const labels = infoTemp.map((entry) => entry.day);
-        const values = infoTemp.map((entry) => entry.all_day.temperature_max);
-        const valuesMin = infoTemp.map((entry) => entry.all_day.temperature_min);
-        // const labels = infoTemp.map((entry) => entry.daily.data.day);
-        // const values = infoTemp.map((entry) => entry.daily.data.all_day.temperature_max);
-        // const valuesMin = infoTemp.map((entry) => entry.daily.data.all_day.temperature_min);
-        if (grafico1) {
-          grafico1.destroy();
-        }
-        document.getElementById("grafico").style.height = "400px"
-        const ctx = document.getElementById("graficoTemperatura").getContext("2d");
-        // document.getElementById("graficoTemperatura").style.width = "900px";
-        grafico1 = new Chart(ctx, {
-              type: "bar",
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    label: "Fecha",
-                    data: valuesMin,
-                    // backgroundColor: "rgba(0, 123, 255, 0.5)",
-                    backgroundColor: "red",
-                    borderRadius: Number.MAX_VALUE,
-                    borderWidth: 3,
-                  },
-                  {
-                    label: "Fecha",
-                    data: values,
-                    backgroundColor: "rgba(0, 123, 255, 0.5)",
-                    borderWidth: 3,
-                  },
-                ],
-              },
-              
-            });
-            // const speed = infoTemp.map((entry) => entry.all_day.wind.speed);
-            // const ctx_2 = document.getElementById("graficoVelocidadViento").getContext("2d");
-            // if (grafico2) {
-            //   grafico2.destroy();
-            // }
-            // grafico2 = new Chart(ctx_2, {
-            //   type: "line",
-            //   data: {
-            //     labels: labels,
-            //     datasets: [
-            //       {
-            //         label: "Fecha",
-            //         data: speed,
-            //         backgroundColor: "rgba(0, 123, 255, 0.5)",
-            //         borderWidth: 3,
-            //       },
-            //     ],
-            //   },
-            //   option:{
-            //     responsive: true,
-            //     title: {
-            //         display: true,
-            //         text: 'Pronóstico del tiempo, Proximos 7 días'
-            //     }
-            //   },
-            // });
-            // const precipitation = infoTemp.map((entry) => entry.all_day.precipitation.total);
-            // const ctx_3 = document.getElementById("graficoLLuvias").getContext("2d");
-            // if (grafico3) {
-            //   grafico3.destroy();
-            // }
-            // grafico3 = new Chart(ctx_3, {
-            //   type: "line",
-            //   data: {
-            //     labels: labels,
-            //     datasets: [
-            //       {
-            //         label: "Fecha",
-            //         data: precipitation,
-            //         backgroundColor: "rgba(0, 123, 255, 0.5)",
-            //         borderWidth: 3,
-            //       },
-            //     ],
-            //   },
-            // });
+      const labels = infoTemp.map((entry) => entry.day);
+      const values = infoTemp.map((entry) => entry.all_day.temperature_max);
+      const valuesMin = infoTemp.map((entry) => entry.all_day.temperature_min);
+
+      crearGrafico(infoGrafico);
     });
 }
 
