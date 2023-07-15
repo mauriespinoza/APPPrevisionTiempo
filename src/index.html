@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Weather Chart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/styles_3.css">
+    <title>App Previsión del Tiempo API METEO</title>
 </head>
+
 <body>
+    <nav>
+        <img src="assets/icon/logo.png" class="logo" alt="">
+        <!-- <h2>CRUD</h2> -->
+    </nav>
     <section id="typography">
-        <h1>Aplicación de Prevision del tiempo</h1>
+        <h1 class="display-3 text-center">Aplicación de Previsión del tiempo</h1>
     </section>
     <form id="form">
         <section id="buscar">
-            <input type="text" name="" id="txtUbicacion" class="form-control">
+            <input type="text" name="" id="txtUbicacion" class="form-control" placeholder="Localidad"
+                aria-label="default input example">
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button id="btnBuscar" class="btn btn-primary">Buscar</button>
+                <button id="btnBuscar" class="btn btn-secondary btn-lg">Buscar</button>
             </div>
         </section>
     </form>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
+    <div id="tabla-contenedor" class="table-responsive">
+        <table id="tablaLocalidades" class="table table-bordered">
+            <thead id="theadLocalidades" class="table-light">
+                <tr id="trLocalidades">
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Area</th>
@@ -33,61 +40,119 @@
                 </tr>
             </thead>
             <tbody id="bodyTable">
-        
-            </tbody>
-          </table>
-    
-    <!-- SECTION BLOG ADICIONAL-->
-    <section class="primary-section">
 
-        <div class="container-section">
-            <!-- <div class="container-section-box-col-1">Caja 1</div> -->
-            <div class="container-section-box-col-main">
-                <!-- <div class="d-flex">
-                    <h6 class="flex-grow-1">Buin</h6>
-                    <h6>16:08</h6>
-                </div> -->
-                <div >
-                    <div>
-                        <span class="uppercase">Today</span> 
-                        <span id="lblTempMax" class="text-3xl font-bold text-black mb-8"></span>
-                    </div>
-                    <div>
-                        <!-- <img src="assets/icon/weather_icons/set01/big/2.png" alt=""> -->
-                        <img id="iconTiempo" alt="">
-                    </div>
-                    <!-- <p id="lblResumen" class="text-black mb-2"></p> -->
-                    <p id="lblResumen" class="text-3xl font-bold text-black mb-2"></p>
-                    <p id="lblTempDia" class="text-3xl font-bold text-black mb-8">
-                    <p id="lblCubierto" class="text-3xl font-bold text-black mb-8"> 
-                    <p id="lblPrecipitacion" class="text-3xl font-bold text-black mb-8">   
-                    <!-- <div class="w-32 h-32 flex align-items-baseline justify-content-end">
-                        <img src="assets/icon/weather_icons/set01/big/2.png" alt="">
-            
-                    </div> -->
-                        <!-- <span id="lblTempMin" class="font-normal text-white mx-1">/</span> -->
-                    </p>
+            </tbody>
+        </table>
+    </div>
+    <div id="rowInfo" class="row">
+        <div class="col-lg-4">
+            <!--INFO LOCALIDAD -->
+            <div class="card">
+                <div class="card-header bg-cabezera text-white">
+                    <h1 id="lblLocalidad"></h1>
+                    <h2> <small id="lblAltura"></small></h2>
+                    <h2> <small id="lblCoordenadas"></small> </h2>
+                </div>
+                <div class="card-body">
+                    <h3><small id="lblFecha"></small></h3>
+                    <h5 id="lblZonaHoraria"></h5>
                 </div>
             </div>
-            <div class="container-section-box-col-1">
-                <!-- <img src="assets/img/Block-aquapad.jpg" alt="Arte"> 
-                <button class="btn-col-1">Arte</button>-->
-                <canvas id="graficoTemperatura"></canvas>
-
-            </div>
-            <div class="container-section-box-col-2">
-                <canvas id="graficoLLuvias"></canvas>
-            </div>
-            <div class="container-section-box-col-3">
-                <!--<button class="btn-col-3">Pinturas Temperas</button>-->
-                <canvas id="graficoVelocidadViento"></canvas>
+        </div>
+        <!--INFO TEMPERATURA-->
+        <div class="col-lg-4">
+            <div class="card mb-5">
+                <div class="card-header bg-cabezera text-white">
+                    <h4 class="text-center"><i class="wi wi-thermometer"></i> Temperatura del Aire  </h4>
+                </div>
+                <div class="card-body">
+                    <h1 id="lblTempActual" class="text-center mt-4 mb-5 display-1">
+                    </h1>
+                    <table class="table table-condensed ">
+                        <tr class="bg-rotulo-tabla">
+                            <th> Período </th>
+                            <th> Mínima </th>
+                            <th> Máxima </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <h4> Hoy </h4>
+                            </th>
+                            <td>
+                                <h4 id="lblTempMin_1"></h4>
+                            </td>
+                            <td>
+                                <h4 id="lblTempMax_1"></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <h4>Mañana </h4>
+                            </th>
+                            <td>
+                                <h4 id="lblTempMin_2"></h4>
+                            </td>
+                            <td>
+                                <h4 id="lblTempMax_2"></h4>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </section>
-    
+        <!--INFO LLUVIAS-->
+        <div class="col-lg-4">
+            <div class="card mb-5">
+                <div class="card-header text-left bg-cabezera text-white">
+                    <h4 class="text-center"> <i class="wi wi-rain"></i> Pronóstico Lluvia <small> Próximos días</small>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-condensed">
+                        <tr class="bg-rotulo-tabla">
+                            <th class="text-left">Período </th>
+                            <th class="text-center"> Cantidad <small> mm</small></th>
+                            <th class="text-center"> Tipo</th>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <h4> Hoy </h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaCant_1"></h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaTipo_1"></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <h4> Mañana </h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaCant_2"></h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaTipo_2"></h4>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="rowGrafico" class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-cabezera text-white">
+                    <h4> <i class="fa fa-line-chart" aria-hidden="true"></i> Pronóstico del Tiempo, próximos 7 días</h4>
+                </div>
+                <canvas id="graficoTemperatura"></canvas>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
-    <!--<script src="js/api.js" type="module"></script>-->
     <script src="js/api.js" type="module"></script>
 </body>
+
 </html>
