@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/styles_3.css">
+    <title>App Previsión del Tiempo API METEO</title>
+</head>
+
+<body>
+    <nav>
+        <img src="assets/icon/logo.png" class="logo" alt="">
+        <!-- <h2>CRUD</h2> -->
+    </nav>
+    <section id="typography">
+        <h1 class="display-3 text-center">Aplicación de Previsión del tiempo</h1>
+    </section>
+    <form id="form">
+        <section id="buscar">
+            <input type="text" name="" id="txtUbicacion" class="form-control" placeholder="Localidad"
+                aria-label="default input example">
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button id="btnBuscar" class="btn btn-secondary btn-lg">Buscar</button>
+            </div>
+        </section>
+    </form>
+    <div id="tabla-contenedor" class="table-responsive">
+        <table id="tablaLocalidades" class="table table-bordered">
+            <thead id="theadLocalidades" class="table-light">
+                <tr id="trLocalidades">
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Area</th>
+                    <th>Provincia</th>
+                    <th>Pais</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody id="bodyTable">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="rowInfo" class="row">
+        <div class="col-lg-4">
+            <!--INFO LOCALIDAD -->
+            <div class="card">
+                <div class="card-header bg-cabezera text-white">
+                    <h1 id="lblLocalidad"></h1>
+                    <h2> <small id="lblAltura"></small></h2>
+                    <h2> <small id="lblCoordenadas"></small> </h2>
+                </div>
+                <div class="card-body">
+                    <h3><small id="lblFecha"></small></h3>
+                    <h5 id="lblZonaHoraria"></h5>
+                </div>
+            </div>
+        </div>
+        <!--INFO TEMPERATURA-->
+        <div class="col-lg-4">
+            <div class="card mb-5">
+                <div class="card-header bg-cabezera text-white">
+                    <h4 class="text-center"><i class="wi wi-thermometer"></i> Temperatura del Aire  </h4>
+                </div>
+                <div class="card-body">
+                    <h1 id="lblTempActual" class="text-center mt-4 mb-5 display-1">
+                    </h1>
+                    <table class="table table-condensed ">
+                        <tr class="bg-rotulo-tabla">
+                            <th> Período </th>
+                            <th> Mínima </th>
+                            <th> Máxima </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <h4> Hoy </h4>
+                            </th>
+                            <td>
+                                <h4 id="lblTempMin_1"></h4>
+                            </td>
+                            <td>
+                                <h4 id="lblTempMax_1"></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <h4>Mañana </h4>
+                            </th>
+                            <td>
+                                <h4 id="lblTempMin_2"></h4>
+                            </td>
+                            <td>
+                                <h4 id="lblTempMax_2"></h4>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--INFO LLUVIAS-->
+        <div class="col-lg-4">
+            <div class="card mb-5">
+                <div class="card-header text-left bg-cabezera text-white">
+                    <h4 class="text-center"> <i class="wi wi-rain"></i> Pronóstico Lluvia <small> Próximos días</small>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-condensed">
+                        <tr class="bg-rotulo-tabla">
+                            <th class="text-left">Período </th>
+                            <th class="text-center"> Cantidad <small> mm</small></th>
+                            <th class="text-center"> Tipo</th>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <h4> Hoy </h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaCant_1"></h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaTipo_1"></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <h4> Mañana </h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaCant_2"></h4>
+                            </td>
+                            <td class="text-center">
+                                <h4 id="lblLluviaTipo_2"></h4>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="rowGrafico" class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-cabezera text-white">
+                    <h4> <i class="fa fa-line-chart" aria-hidden="true"></i> Pronóstico del Tiempo, próximos 7 días</h4>
+                </div>
+                <canvas id="graficoTemperatura"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js" type="module"></script>
+</body>
+
+</html>
